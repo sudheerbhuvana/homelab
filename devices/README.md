@@ -1,6 +1,6 @@
 # Devices
 
-A small homelab built with the gadgets I already had and whatever I could afford.
+Hardware, cloud VMs, networking gear, and power setup used in my homelab.
 
 ## Compute & Cloud
 
