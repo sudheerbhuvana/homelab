@@ -1,0 +1,66 @@
+- name: Media
+  slug: media
+  width: slim
+  head-widgets:
+    - type: search
+      search-engine: google
+      hide-header: true
+      new-tab: true
+  columns:
+    - size: full
+      widgets:
+        - type: bookmarks
+          title: Media & Streaming
+          groups:
+            - title: Libraries
+              links:
+                - title: Immich Photos
+                  url: https://immich.sudheer.fyi
+                  icon: /assets/immich.svg
+                - title: Jellyfin Server
+                  url: https://jellyfin.sudheer.fyi
+                  icon: /assets/jellyfin.svg
+            - title: Servarr Stack
+              links:
+                - title: Sonarr
+                  url: https://sonarr.sudheer.fyi
+                  icon: /assets/sonarr.svg
+                - title: Radarr
+                  url: https://radarr.sudheer.fyi
+                  icon: /assets/radarr.svg
+                - title: Prowlarr
+                  url: https://prowlarr.sudheer.fyi
+                  icon: /assets/prowlarr.svg
+                - title: qBittorrent
+                  url: https://qbittorrent.sudheer.fyi
+                  icon: /assets/qbittorrent.svg
+
+        - type: rss
+          title: Tech News
+          style: detailed-list
+          limit: 10
+          collapse-after: 5
+          feeds:
+            - url: https://www.servethehome.com/feed/
+              title: ServeTheHome
+            - url: https://arstechnica.com/feed/
+              title: Ars Technica
+            - url: https://lobste.rs/rss
+              title: Lobsters
+            - url: https://www.theverge.com/rss/index.xml
+              title: The Verge
+
+    - size: small
+      widgets:
+        - type: reddit
+          title: r/selfhosted
+          subreddit: selfhosted
+          style: vertical-cards
+          limit: 8
+          show-thumbnails: false
+
+        - type: hacker-news
+          title: Hacker News
+          limit: 10
+          collapse-after: 5
+          sort-by: top

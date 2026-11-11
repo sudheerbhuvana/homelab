@@ -1,0 +1,17 @@
+server:
+  port: 8080
+  assets-path: /app/assets
+
+branding:
+  logo-url: /assets/logo-w.svg
+  favicon-url: /assets/logo-w.svg
+  custom-footer: "<div><span class=\"size-h3\">Sudheer's Homelab</span></div>"
+
+theme:
+  disable-picker: true
+  custom-css-file: /assets/custom.css
+
+pages:
+  $include: pages/home.yml
+  $include: pages/servers.yml
+  $include: pages/media.yml

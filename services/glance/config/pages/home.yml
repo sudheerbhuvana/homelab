@@ -1,0 +1,114 @@
+- name: Home
+  slug: home
+  width: slim
+  head-widgets:
+    - type: search
+      search-engine: google
+      hide-header: true
+      new-tab: true
+  columns:
+    - size: full
+      widgets:
+        - type: monitor
+          title: Services
+          cache: 1m
+          sites:
+            - title: Arcane
+              url: https://arcane.sudheer.fyi
+              icon: /assets/arcane.svg
+            - title: Beszel
+              url: https://beszel.sudheer.fyi
+              icon: /assets/beszel.svg
+            - title: Immich
+              url: https://immich.sudheer.fyi
+              icon: /assets/immich.svg
+            - title: Pi-hole 1
+              url: https://pihole1.sudheer.fyi/admin
+              icon: /assets/pi-hole.svg
+            - title: Pi-hole 2
+              url: https://pihole2.sudheer.fyi/admin
+              icon: /assets/pi-hole.svg
+            - title: Pi-hole 3
+              url: https://pihole3.sudheer.fyi/admin
+              icon: /assets/pi-hole.svg
+            - title: Nginx Proxy Manager
+              url: https://proxy.sudheer.fyi
+              icon: /assets/nginx-proxy-manager.svg
+            - title: Proxmox VE
+              url: https://pve.sudheer.fyi
+              icon: /assets/proxmox.svg
+            - title: PBS
+              url: https://pbs.sudheer.fyi
+              icon: /assets/proxmox-backup-server.svg
+            - title: ZimaOS
+              url: https://zima.sudheer.fyi
+              icon: /assets/zima.svg
+            - title: Portainer
+              url: https://100.126.139.15:9443
+              allow-insecure: true
+              icon: /assets/portainer.svg
+            - title: Stackryze Status
+              url: https://status.stackryze.com
+        - type: monitor
+          title: Servarr Stack
+          cache: 1m
+          sites:
+            - title: Jellyfin
+              url: https://jellyfin.sudheer.fyi
+              icon: /assets/jellyfin.svg
+            - title: Sonarr
+              url: https://sonarr.sudheer.fyi
+              icon: /assets/sonarr.svg
+            - title: Radarr
+              url: https://radarr.sudheer.fyi
+              icon: /assets/radarr.svg
+            - title: Prowlarr
+              url: https://prowlarr.sudheer.fyi
+              icon: /assets/prowlarr.svg
+            - title: qBittorrent
+              url: https://qbittorrent.sudheer.fyi
+              icon: /assets/qbittorrent.svg
+    - size: small
+      widgets:
+        - type: custom-api
+          title: Immich stats
+          cache: 1d
+          url: https://immich.sudheer.fyi/api/server/statistics
+          headers:
+            x-api-key: ${IMMICH_API_KEY}
+            Accept: application/json
+          template: |
+            <div class="flex justify-between text-center">
+              <div>
+                  <div class="color-highlight size-h3">{{ .JSON.Int "photos" | formatNumber }}</div>
+                  <div class="size-h6">PHOTOS</div>
+              </div>
+              <div>
+                  <div class="color-highlight size-h3">{{ .JSON.Int "videos" | formatNumber }}</div>
+                  <div class="size-h6">VIDEOS</div>
+              </div>
+              <div>
+                  <div class="color-highlight size-h3">{{ div (.JSON.Int "usage" | toFloat) 1073741824 | toInt | formatNumber }}GB</div>
+                  <div class="size-h6">USAGE</div>
+              </div>
+            </div>
+        - type: dns-stats
+          title: Pi-hole 1
+          service: pihole-v6
+          url: https://pihole1.sudheer.fyi
+          password: "${PIHOLE_PASSWORD}"
+          hide-graph: true
+
+        - type: dns-stats
+          title: Pi-hole 2
+          service: pihole-v6
+          url: https://pihole2.sudheer.fyi
+          password: "${PIHOLE_PASSWORD}"
+          hide-graph: true
+
+        - type: dns-stats
+          title: Pi-hole 3
+          service: pihole-v6
+          url: https://pihole3.sudheer.fyi
+          password: "${PIHOLE_PASSWORD}"
+          hide-graph: true

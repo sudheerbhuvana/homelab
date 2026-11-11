@@ -1,0 +1,12 @@
+# Secrets
+.env
+*.key
+*.pub
+
+# Local installers / configs in assets
+assets/*.exe
+assets/*.conf
+
+# OS noise
+.DS_Store
+Thumbs.db

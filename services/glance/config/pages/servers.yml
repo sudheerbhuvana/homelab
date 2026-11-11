@@ -1,0 +1,135 @@
+- name: Servers
+  slug: servers
+  width: wide
+  head-widgets:
+    - type: search
+      search-engine: google
+      hide-header: true
+      new-tab: true
+  columns:
+    - size: full
+      widgets:
+        - type: custom-api
+          title: Homelab Servers
+          cache: 15s
+          url: https://beszel.sudheer.fyi/api/collections/systems/records
+          headers:
+            Authorization: "${BESZEL_TOKEN}"
+          template: |
+            {{ if .JSON.Array "items" }}
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+              {{ range .JSON.Array "items" }}
+              {{ $name := .String "name" }}
+              {{ $u := .Float "info.u" | toInt }}
+              {{ $days := div $u 86400 }}
+              {{ $hours := div $u 3600 }}
+              <a href="{{ if eq $name "PVE" }}https://pve.sudheer.fyi{{ else if eq $name "ZIMA-OS" }}https://zima.sudheer.fyi{{ else }}https://beszel.sudheer.fyi{{ end }}" target="_blank" rel="noreferrer" class="widget-content-frame border-radius flex flex-column gap-12 server-card-interactive" style="padding: 16px;">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-12">
+                    {{ if eq $name "PVE" }}
+                      <img src="/assets/proxmox.svg" style="height: 26px; width: 26px; object-fit: contain;">
+                    {{ else if or (eq $name "WYSE-P") (eq $name "WYSE-S") }}
+                      <img src="/assets/dell-light.svg" style="height: 26px; width: 26px; object-fit: contain;">
+                    {{ else if eq $name "ZIMA-OS" }}
+                      <img src="/assets/hp.svg" style="height: 26px; width: 26px; object-fit: contain;">
+                    {{ else if eq $name "Beszel" }}
+                      <img src="/assets/beszel.svg" style="height: 26px; width: 26px; object-fit: contain;">
+                    {{ else if or (eq $name "CLOUD-NANO") (ne (findMatch "^oci-" $name) "") }}
+                      <img src="/assets/oracle.svg" style="height: 26px; width: 26px; object-fit: contain;">
+                    {{ else }}
+                      <img src="/assets/docker.svg" style="height: 26px; width: 26px; object-fit: contain;">
+                    {{ end }}
+                    <div>
+                      <div class="size-h3 font-bold color-highlight">{{ $name }}</div>
+                      <div class="size-h6 color-subdue">{{ .String "host" }} &bull; {{ .Int "info.t" }} cores</div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-8">
+                    {{ if gt (.Int "info.pu.0") 0 }}
+                    <span class="size-h6 font-bold {{ if gt (.Int "info.pu.1") 0 }}color-negative{{ else }}color-primary{{ end }}" style="padding: 2px 6px; border-radius: 4px; background: var(--color-background); font-size: 0.8em;" title="{{ .Int "info.pu.0" }} updates ({{ .Int "info.pu.1" }} security)">
+                      {{ .Int "info.pu.0" }} upd{{ if gt (.Int "info.pu.1") 0 }}!{{ end }}
+                    </span>
+                    {{ end }}
+                    <div class="status-indicator {{ if eq (.String "status") "up" }}status-indicator-positive{{ else }}status-indicator-negative{{ end }}"></div>
+                    <span class="size-h6 uppercase font-bold {{ if eq (.String "status") "up" }}color-positive{{ else }}color-negative{{ end }}">
+                      {{ .String "status" }} &bull; {{ if gt $u 86400 }}{{ $days }}d{{ else }}{{ $hours }}h{{ end }}
+                    </span>
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; background: var(--color-background); padding: 10px 8px; border-radius: var(--border-radius);">
+                  <div>
+                    <div class="size-h6 color-subdue">CPU</div>
+                    <div class="size-h4 font-bold color-highlight">{{ .Float "info.cpu" | printf "%.1f" }}%</div>
+                  </div>
+                  <div>
+                    <div class="size-h6 color-subdue">RAM</div>
+                    <div class="size-h4 font-bold color-highlight">{{ .Float "info.mp" | printf "%.1f" }}%</div>
+                  </div>
+                  <div>
+                    <div class="size-h6 color-subdue">DISK</div>
+                    <div class="size-h4 font-bold color-highlight">{{ .Float "info.dp" | printf "%.1f" }}%</div>
+                  </div>
+                  <div>
+                    <div class="size-h6 color-subdue">TEMP</div>
+                    <div class="size-h4 font-bold color-highlight">{{ if .Float "info.dt" }}{{ .Float "info.dt" | printf "%.0f" }}&deg;C{{ else }}--{{ end }}</div>
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; background: var(--color-background); padding: 8px 8px; border-radius: var(--border-radius); font-size: 0.9em;">
+                  <div>
+                    <div class="size-h6 color-subdue">LOAD</div>
+                    <div class="size-h5 font-bold color-highlight">{{ .Float "info.la.0" | printf "%.2f" }}</div>
+                  </div>
+                  <div>
+                    <div class="size-h6 color-subdue">NETWORK</div>
+                    <div class="size-h5 font-bold color-highlight">{{ div (.Float "info.bb") 1024 | printf "%.1f" }} KB/s</div>
+                  </div>
+                  <div>
+                    <div class="size-h6 color-subdue">SERVICES</div>
+                    <div class="size-h5 font-bold {{ if gt (.Int "info.sv.1") 0 }}color-negative{{ else }}color-positive{{ end }}">
+                      {{ .Int "info.sv.0" }} {{ if gt (.Int "info.sv.1") 0 }}({{ .Int "info.sv.1" }}!) {{ else }}OK{{ end }}
+                    </div>
+                  </div>
+                </div>
+              </a>
+              {{ end }}
+            </div>
+            {{ else }}
+            <div class="color-subdue text-center">No systems found or token required</div>
+            {{ end }}
+
+        - type: custom-api
+          title: Docker Containers
+          cache: 15s
+          url: https://beszel.sudheer.fyi/api/collections/systems/records?perPage=50&sort=name
+          headers:
+            Authorization: "${BESZEL_TOKEN}"
+          subrequests:
+            containers:
+              url: https://beszel.sudheer.fyi/api/collections/containers/records?perPage=500&sort=name
+              headers:
+                Authorization: "${BESZEL_TOKEN}"
+          template: |
+            {{ $systems := .JSON.Array "items" }}
+            {{ $containers := (.Subrequest "containers").JSON.Array "items" }}
+            {{ if and $systems $containers }}
+            <div class="flex flex-column gap-12">
+              {{ range $systems }}
+              {{ $sysId := .String "id" }}
+              {{ $sysName := .String "name" }}
+              {{ $sysHost := .String "host" }}
+              <details class="server-collapsible widget-content-frame border-radius" style="padding: 12px 16px;">
+                <summary class="flex items-center gap-10" style="padding: 4px 0;">
+                  <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  <img src="{{ if eq $sysName "ZIMA-OS" }}/assets/hp.svg{{ else if or (eq $sysName "WYSE-P") (eq $sysName "WYSE-S") }}/assets/dell-light.svg{{ else if eq $sysName "PVE" }}/assets/proxmox.svg{{ else if eq $sysName "Beszel" }}/assets/beszel.svg{{ else if or (eq $sysName "CLOUD-NANO") (ne (findMatch "^oci-" $sysName) "") }}/assets/oracle.svg{{ else }}/assets/docker.svg{{ end }}" style="height: 20px; width: 20px; object-fit: contain;">
+                  <span class="size-h4 font-bold color-highlight">{{ $sysName }}</span>
+                  <span class="size-h6 color-subdue" style="margin-left: 6px;">{{ $sysHost }}</span>
+                </summary>
+                <div class="containers-grid">{{ range $containers }}{{ if eq (.String "system") $sysId }}{{ $cName := .String "name" }}{{ $cNet := .Float "net" }}<a href="{{ if eq $cName "jellyfin" }}https://jellyfin.sudheer.fyi{{ else if eq $cName "sonarr" }}https://sonarr.sudheer.fyi{{ else if eq $cName "radarr" }}https://radarr.sudheer.fyi{{ else if eq $cName "prowlarr" }}https://prowlarr.sudheer.fyi{{ else if eq $cName "qbittorrent" }}https://qbittorrent.sudheer.fyi{{ else if eq $cName "nginx-proxy-manager" }}https://proxy.sudheer.fyi{{ else if eq $cName "arcane" }}https://arcane.sudheer.fyi{{ else if eq $cName "pihole" }}{{ if eq $sysName "WYSE-P" }}https://pihole1.sudheer.fyi/admin{{ else if eq $sysName "WYSE-S" }}https://pihole2.sudheer.fyi/admin{{ else if eq $sysName "CLOUD-NANO" }}https://pihole3.sudheer.fyi/admin{{ else }}https://beszel.sudheer.fyi{{ end }}{{ else }}https://beszel.sudheer.fyi{{ end }}" target="_blank" rel="noreferrer" class="widget-content-frame border-radius flex items-center justify-between server-card-interactive" style="padding: 10px 14px; gap: 12px; min-height: 54px; text-decoration: none;"><div class="flex items-center gap-10" style="min-width: 0; flex: 1 1 auto;"><img src="{{ if eq $cName "sonarr" }}/assets/sonarr.svg{{ else if eq $cName "radarr" }}/assets/radarr.svg{{ else if eq $cName "prowlarr" }}/assets/prowlarr.svg{{ else if eq $cName "qbittorrent" }}/assets/qbittorrent.svg{{ else if eq $cName "jellyfin" }}/assets/jellyfin.svg{{ else if eq $cName "nginx-proxy-manager" }}/assets/nginx-proxy-manager.svg{{ else if eq $cName "cloudflared" }}/assets/cloudflare.svg{{ else if eq $cName "pihole" }}/assets/pi-hole.svg{{ else if or (eq $cName "arcane") (eq $cName "arcane-edge-agent") }}/assets/arcane.svg{{ else if eq $cName "beszel" }}/assets/beszel.svg{{ else }}/assets/docker.svg{{ end }}" style="height: 24px; width: 24px; object-fit: contain; flex-shrink: 0;"><div style="min-width: 0; flex: 1 1 auto;"><div class="flex items-center gap-6" style="min-width: 0;"><span class="font-bold color-highlight size-h5" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-transform: capitalize; line-height: 1.2;">{{ $cName }}</span>{{ if .Bool "updatable" }}<span style="font-size: 0.65em; padding: 1px 4px; border-radius: 4px; background: rgba(var(--color-primary-rgb), 0.2); color: var(--color-primary); font-weight: bold; text-transform: uppercase; flex-shrink: 0;">Update</span>{{ end }}</div><div class="size-h6 color-subdue" style="font-size: 0.78em; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ .String "image" }}">{{ .String "image" }}</div></div></div><div class="flex items-center gap-10" style="flex-shrink: 0;"><div class="text-right" style="line-height: 1.2; white-space: nowrap;"><div class="size-h6 color-highlight font-bold">{{ .Float "cpu" | printf "%.1f" }}% &bull; {{ .Float "memory" | printf "%.0f" }}MB</div><div class="size-h6 color-subdue" style="font-size: 0.8em;">&darr;&uarr; {{ if gt $cNet 1048576.0 }}{{ div $cNet 1048576 | printf "%.1f" }}MB{{ else if gt $cNet 1024.0 }}{{ div $cNet 1024 | printf "%.1f" }}KB{{ else }}{{ $cNet | toInt }}B{{ end }}</div></div><div style="display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--color-positive); color: var(--color-positive); flex-shrink: 0;" title="{{ .String "status" }}"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div></a>{{ end }}{{ end }}</div>
+              </details>
+              {{ end }}
+            </div>
+            {{ else }}
+            <div class="color-subdue text-center">No active containers found</div>
+            {{ end }}
