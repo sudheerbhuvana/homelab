@@ -8,3 +8,4 @@ Each service in the homelab is deployed as a self-contained folder under
 | [glance](glance/) | Dashboard | Aggregates status from every other service |
 | [pocket-id](pocket-id/) | Identity Provider (OIDC) | Lightweight OIDC provider for homelab authentication |
 | [tinyauth](tinyauth/) | Forward Auth | Lightweight authentication proxy with Pocket ID OAuth support |
+| [nginx-proxy-manager](nginx-proxy-manager/) | Reverse Proxy | Network-wide reverse proxy and SSL certificate manager |

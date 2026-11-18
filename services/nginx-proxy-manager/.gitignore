@@ -1,0 +1,12 @@
+# Persistent data and certificates
+data/
+letsencrypt/
+
+# Secrets
+.env
+*.key
+*.pub
+
+# OS noise
+.DS_Store
+Thumbs.db
