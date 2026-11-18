@@ -1,0 +1,11 @@
+# Secrets
+.env
+*.key
+*.pub
+
+# Persistent data
+etc-pihole/
+
+# OS noise
+.DS_Store
+Thumbs.db
