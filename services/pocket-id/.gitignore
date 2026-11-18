@@ -1,0 +1,11 @@
+# Secrets
+.env
+*.key
+*.pub
+
+# Persistent data
+data/
+
+# OS noise
+.DS_Store
+Thumbs.db
