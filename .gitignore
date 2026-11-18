@@ -1,0 +1,13 @@
+# Sub-repositories
+openseed/
+
+# Secrets & Environments
+**/.env
+**/.env.local
+**/.env.*.local
+
+# OS / IDE artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

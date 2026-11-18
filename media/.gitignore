@@ -1,0 +1,14 @@
+# Secrets
+.env
+
+# Runtime container config directories
+gluetun/
+qbittorrent/
+prowlarr/
+sonarr/
+radarr/
+lidarr/
+bazarr/
+seerr/
+jellystat/
+

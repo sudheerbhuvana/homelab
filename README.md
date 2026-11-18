@@ -10,6 +10,7 @@ This repo contains all the details about my homelab: the hardware I've put toget
 
 - **[Devices](devices/):** Hardware specs, switches, power backup (solar inverter + UPS), and cables.
 - **[Services](services/):** Self-hosted stacks and configs.
+- **[Media](media/):** Media automation stack with Gluetun WireGuard VPN tunnel.
 
 More services, configs, and updates are on the way.
 
